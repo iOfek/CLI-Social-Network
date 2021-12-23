@@ -19,6 +19,22 @@ public class Register extends Message {
     }
 
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+
+
+
+
     @Override
     public byte[] encode(Message message) {
         byte [] encodedMessgae;

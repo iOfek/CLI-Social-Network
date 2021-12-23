@@ -13,8 +13,12 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
 
     @Override
     public Message decodeNextByte(byte nextByte) {
-       
-        return null; 
+       /*  if (nextByte == ';') {
+            return popMessage();
+        } */
+
+        pushByte(nextByte);
+        return null; //not a Message yet
     }
 
     @Override
@@ -31,6 +35,14 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
 
         bytes[len++] = nextByte;
     }
+   /*  private Message popString() {
+        //notice that we explicitly requesting that the string will be decoded from UTF-8
+        //this is not actually required as it is the default encoding in java.
+        
+        String result = new String(bytes, 0, len, StandardCharsets.UTF_8);
+        len = 0;
+        return result;
+    } */
    
     
 }

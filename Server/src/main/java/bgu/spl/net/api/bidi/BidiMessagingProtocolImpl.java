@@ -1,29 +1,45 @@
 package bgu.spl.net.api.bidi;
 
-public class BidiMessagingProtocolImpl<T> implements BidiMessagingProtocol<T> {
+import bgu.spl.net.api.bidi.Messages.Message;
+import bgu.spl.net.api.bidi.Messages.Register;
+import bgu.spl.net.srv.DB;
+import bgu.spl.net.srv.User;
 
-    private int ownerId;;
-    private Connections<T> connections;
+public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message> {
 
+    private int ownerId;
+    private Connections<Message> connections;
+    private DB db = DB.getInstance();
+    private boolean shouldTerminate =false;
 
     @Override
-    public void start(int connectionId, Connections<T> connections) {
-        // TODO Auto-generated method stub
+    public void start(int connectionId, Connections<Message> connections) {
         this.ownerId = connectionId;
         this.connections= connections;
         
     }
 
     @Override
-    public void process(T message) {
-        // TODO Auto-generated method stub
+    public void process(Message message) {
+        
+        switch (message.getOpcode()) {
+            case REGISTER:
+                register((Register)message);
+                break;
+        
+            default:
+                break;
+        }
         
     }
 
     @Override
     public boolean shouldTerminate() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.shouldTerminate;
+    }
+
+    public void register(Register message){
+        db.register(new User(message.getUsername(),message.getPassword(),message.getBirthday()));
     }
     
 }
