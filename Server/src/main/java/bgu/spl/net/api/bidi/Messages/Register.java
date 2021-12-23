@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormatSymbols;
+import java.util.Arrays;
 
 public class Register extends Message {
     private String username;
@@ -18,6 +19,34 @@ public class Register extends Message {
         this.birthday = birthday;
     }
 
+    public Register(byte[] bytes){
+        this.opcode = Opcode.REGISTER;
+        int [] zeroIndexes = new int [3];
+        int index =0;
+        for (int i =3; i < bytes.length &&index <3; i++) {
+            if(bytes[i] == '\0' ){
+                zeroIndexes[index] = i;
+                index+=1;
+            }
+        }
+        System.out.println(Arrays.toString(zeroIndexes));
+        username  =  new String(bytes, 2, zeroIndexes[0], StandardCharsets.UTF_8);
+        password  =  new String(bytes, zeroIndexes[0], zeroIndexes[1], StandardCharsets.UTF_8);
+        birthday  =  new String(bytes, zeroIndexes[1], zeroIndexes[2]-1, StandardCharsets.UTF_8);
+    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
 
     public String getUsername() {
         return username;
@@ -40,7 +69,7 @@ public class Register extends Message {
         byte [] encodedMessgae;
         byte [] opcodeBytes = shortToBytes(getOpcodeValue());
         byte [] usernameBytes = this.username.getBytes(StandardCharsets.UTF_8);
-        byte seperator =0;
+        byte seperator ='\0';
         byte [] passwordBytes = this.password.getBytes(StandardCharsets.UTF_8);
         byte [] birthdayBytes = this.birthday.getBytes(StandardCharsets.UTF_8);
         encodedMessgae = ArrayUtils.addAll(opcodeBytes,seperator);
@@ -50,6 +79,8 @@ public class Register extends Message {
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, seperator);
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, birthdayBytes);
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, seperator);
+        String bye = ";";
+        encodedMessgae = ArrayUtils.addAll(encodedMessgae, bye.getBytes(StandardCharsets.UTF_8));
         return encodedMessgae;
     }
 

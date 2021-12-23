@@ -5,9 +5,9 @@ import java.net.*;
 import java.util.function.Supplier;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
+import bgu.spl.net.api.bidi.BidiMessageEncoderDecoder;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
-import bgu.spl.net.api.bidi.Messages.BidiMessageEncoderDecoder;
 import bgu.spl.net.api.bidi.Messages.Message;
 import bgu.spl.net.srv.Server;
 

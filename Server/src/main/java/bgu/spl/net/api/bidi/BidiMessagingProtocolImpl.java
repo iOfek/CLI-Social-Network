@@ -12,6 +12,10 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     private DB db = DB.getInstance();
     private boolean shouldTerminate =false;
 
+    public BidiMessagingProtocolImpl(){
+
+    }
+
     @Override
     public void start(int connectionId, Connections<Message> connections) {
         this.ownerId = connectionId;
@@ -21,7 +25,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
 
     @Override
     public void process(Message message) {
-        
+        System.out.println("SS");
         switch (message.getOpcode()) {
             case REGISTER:
                 register((Register)message);
@@ -39,6 +43,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     }
 
     public void register(Register message){
+        System.out.println("REGISTER");
         db.register(new User(message.getUsername(),message.getPassword(),message.getBirthday()));
     }
     
