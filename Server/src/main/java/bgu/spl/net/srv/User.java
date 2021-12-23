@@ -10,6 +10,7 @@ public class User {
     private LinkedList<User> followers;
     private int numOfPosts;
     private int connectionId;
+    private boolean LoggedIn;
 
 
     public User(String username, String password, String birthday) {
@@ -19,6 +20,13 @@ public class User {
         this.following = new LinkedList<>();
         this.followers = new LinkedList<>();
         this.numOfPosts = 0;
+        this.LoggedIn=false;
+    }
+
+    public boolean getLoggedIn() {return LoggedIn;}
+
+    public void setLoggedIn(boolean LoggedIn) {
+        this.LoggedIn = LoggedIn;
     }
 
 

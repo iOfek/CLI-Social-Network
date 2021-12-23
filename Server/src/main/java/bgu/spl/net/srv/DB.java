@@ -13,7 +13,7 @@ public class DB {
         namesToUsesrsMap = new ConcurrentHashMap<>();
     }
     /**
-     * {@link MessageBusImpl} Singleton Holder.
+     * {@link DB} Singleton Holder.
      */
 
 	private static class SingletonHolder {
@@ -34,5 +34,21 @@ public class DB {
             namesToUsesrsMap.put(user.getUsername(), user);
         else
             throw new IllegalStateException("User is already registered");
+    }
+
+    public void login(String userName,String password) throws IllegalStateException{
+        if (!namesToUsesrsMap.containsKey(userName))
+            throw new IllegalStateException("User is not registered");
+        else {
+            User user=namesToUsesrsMap.get(userName);
+            if (user.getLoggedIn())
+                throw new IllegalStateException("User is already logged in");
+            else{
+                if(!(user.getPassword()==password))
+                    throw new IllegalStateException("Incorrect password");
+                else
+                    namesToUsesrsMap.get(user.getUsername()).setLoggedIn(true);
+            }
+        }
     }
 }
