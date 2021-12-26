@@ -60,11 +60,19 @@ public class User {
     }
 
 
+   
+
+    public boolean addFollower(User user){
+        return following.add(user);
+    }
+    public boolean removeFollower(User user){
+        return following.remove(user);
+    }
+    
+    
     public LinkedList<User> getFollowing() {
         return following;
     }
-
-
     public void setFollowing(LinkedList<User> following) {
         this.following = following;
     }

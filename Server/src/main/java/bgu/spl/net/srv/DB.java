@@ -8,9 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DB {
     private ConcurrentHashMap<String,User> namesToUsesrsMap;
-
+    private ConcurrentHashMap<Integer,String> connectionidToUsername;
     private DB(){
         namesToUsesrsMap = new ConcurrentHashMap<>();
+        connectionidToUsername = new ConcurrentHashMap<>();
     }
     /**
      * {@link DB} Singleton Holder.
@@ -36,7 +37,7 @@ public class DB {
             throw new IllegalStateException("User is already registered");
     }
 
-    public void login(String userName,String password) throws IllegalStateException{
+    public void login(String userName,String password, int connectionId) throws IllegalStateException{
         if (!namesToUsesrsMap.containsKey(userName))
             throw new IllegalStateException("User is not registered");
         else {
@@ -44,11 +45,38 @@ public class DB {
             if (user.getLoggedIn())
                 throw new IllegalStateException("User is already logged in");
             else{
-                if(!(user.getPassword()==password))
+                if(!(user.getPassword().equals(password)))
                     throw new IllegalStateException("Incorrect password");
-                else
+                else{
                     namesToUsesrsMap.get(user.getUsername()).setLoggedIn(true);
+                    connectionidToUsername.put(connectionId, userName);
+                }
+                    
             }
         }
     }
+
+    public void logout(int connectionId){
+        if(!connectionidToUsername.contains(connectionId))
+            throw new IllegalStateException("User is not logged in");
+        namesToUsesrsMap.get(connectionidToUsername.get(connectionId)).setLoggedIn(false);
+        connectionidToUsername.remove(connectionId);
+        
+    }
+
+    public void follow(int connectionId,boolean isFollow,String usernameTofollow) {
+        if(!connectionidToUsername.contains(connectionId))
+            throw new IllegalStateException("User is not logged in");
+        User currUser =  namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
+        User userToFollow = namesToUsesrsMap.get(usernameTofollow);
+        if(isFollow){
+            if(!currUser.addFollower(userToFollow))
+                throw new IllegalStateException("User is already being followed");
+        }
+        else{
+            if(!currUser.removeFollower(userToFollow))
+                throw new IllegalStateException("User is already not being followed");
+        }
+       
+    }    
 }

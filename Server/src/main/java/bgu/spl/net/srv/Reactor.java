@@ -2,6 +2,7 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
+import bgu.spl.net.api.bidi.ConnectionsImpl;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,6 +12,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 public class Reactor<T> implements Server<T> {
@@ -23,6 +25,8 @@ public class Reactor<T> implements Server<T> {
 
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
+    private AtomicInteger connectionId;
+    private ConnectionsImpl connections;
 
     public Reactor(
             int numThreads,
@@ -34,6 +38,8 @@ public class Reactor<T> implements Server<T> {
         this.port = port;
         this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
+        this.connectionId = new AtomicInteger(1);
+        this.connections = ConnectionsImpl.getInstance();
     }
 
     @Override
@@ -101,6 +107,9 @@ public class Reactor<T> implements Server<T> {
                 protocolFactory.get(),
                 clientChan,
                 this);
+        int currentConnectionId = connectionId.getAndIncrement();
+        this.connections.addConnection(currentConnectionId,handler);
+        handler.start(currentConnectionId,connections);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
     }
 

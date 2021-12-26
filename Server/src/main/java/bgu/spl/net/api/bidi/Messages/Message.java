@@ -7,7 +7,7 @@ public abstract class Message {
         TEST, REGISTER,LOGIN,LOGOUT,FOLLOW,POST,PM,LOGSTAT,STAT,
         NOTIFICATION,ACK,ERROR,BLOCK
     }
-    
+
     protected Opcode opcode;
 
 
@@ -25,16 +25,20 @@ public abstract class Message {
     public short getOpcodeValue() {
         return (short)opcode.ordinal();
     }
-    /* public Class<? extends Message> f(byte []bytes){
-        if(opcode == Opcode.REGISTER)
-            return Register.class;
-        return null;
-    } */
+    public short getOpcodeValue(Opcode code) {
+        return (short)code.ordinal();
+    }
+   
     public byte[] shortToBytes(short num){
         byte[] bytesArr = new byte[2];
         bytesArr[0] = (byte)((num >> 8) & 0xFF);
         bytesArr[1] = (byte)(num & 0xFF);
         return bytesArr;
+    }
+    public short bytesToShort(byte[] byteArr){
+        short result = (short)((byteArr[0] & 0xff) << 8);
+        result += (short)(byteArr[1] & 0xff);
+        return result;
     }
    
     

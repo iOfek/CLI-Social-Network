@@ -13,8 +13,10 @@ import bgu.spl.net.srv.Server;
 
 public class ReactorMain {
     public static void main(String[] args) {
-        int port = Integer.parseInt(args[0]); ;
-        int nthreads = Integer.parseInt(args[1]);
+        int port = 2090; ;
+        int nthreads = 2;
+        // int port = Integer.parseInt(args[0]); ;
+        // int nthreads = Integer.parseInt(args[1]);
         Supplier<BidiMessagingProtocol<Message>> protocolFactory = () -> new BidiMessagingProtocolImpl();
         
         Supplier <MessageEncoderDecoder<Message>>encoderDecoderFactory = () -> new BidiMessageEncoderDecoder();

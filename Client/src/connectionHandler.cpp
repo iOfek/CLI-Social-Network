@@ -64,7 +64,7 @@ bool ConnectionHandler::sendBytes(const char bytes[], int bytesToWrite) {
 }
  
 bool ConnectionHandler::getLine(std::string& line) {
-    return getFrameAscii(line, '\n');
+    return getFrameAscii(line, ';');
 }
 
 bool ConnectionHandler::sendLine(std::string& line) {
@@ -89,6 +89,7 @@ bool ConnectionHandler::getFrameAscii(std::string& frame, char delimiter) {
  
 bool ConnectionHandler::sendFrameAscii(const std::string& frame, char delimiter) {
 	bool result=sendBytes(frame.c_str(),frame.length());
+    std::cout<< "CEANsE"<<"\n";
 	if(!result) return false;
 	return sendBytes(&delimiter,1);
 }
@@ -101,3 +102,4 @@ void ConnectionHandler::close() {
         std::cout << "closing failed: connection already closed" << std::endl;
     }
 }
+//  REGISTER OFEK SA 23

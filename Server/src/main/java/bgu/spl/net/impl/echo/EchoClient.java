@@ -16,12 +16,6 @@ public class EchoClient {
 
         if (args.length == 0) {
             args = new String[]{"127.0.0.1", "hello"};
-            Register r = new Register("username", "password", "birthday");
-            byte[] b = r.encode(r);
-            Register e = new Register(b);
-            System.out.println("Name "+((Register)e).getUsername());
-                System.out.println("Pass "+((Register)e).getPassword());
-                System.out.println("Birth "+((Register)e).getBirthday());
         }
 
         /* if (args.length < 2) {
@@ -39,9 +33,7 @@ public class EchoClient {
             System.out.println("sending message to server");
             Register r = new Register("username", "password", "birthday");
             byte[] b = r.encode(r);
-            for (byte c : b) {
-                System.out.print(b);
-            }
+            
             dOut.write(b);
             
             // out.newLine();

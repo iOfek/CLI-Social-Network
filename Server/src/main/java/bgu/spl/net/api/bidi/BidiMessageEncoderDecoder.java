@@ -4,6 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
+import bgu.spl.net.api.bidi.Messages.Follow;
+import bgu.spl.net.api.bidi.Messages.Login;
+import bgu.spl.net.api.bidi.Messages.Logout;
 import bgu.spl.net.api.bidi.Messages.Message;
 import bgu.spl.net.api.bidi.Messages.Register;
 import bgu.spl.net.api.bidi.Messages.Message.Opcode;
@@ -20,8 +23,7 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
 
     @Override
     public Message decodeNextByte(byte nextByte) {
-        
-         if (nextByte == ';') {
+        if (nextByte == ';') {
             return popMessage();
         } 
 
@@ -52,7 +54,7 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
    
     
     
-    /* public String bytesToString(byte[] byteArr){
+     public String bytesToString(byte[] byteArr){
         String result = new String(bytes,StandardCharsets.UTF_8);
         return result;
     }
@@ -62,27 +64,26 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
         bytesArr[0] = (byte)((num >> 8) & 0xFF);
         bytesArr[1] = (byte)(num & 0xFF);
         return bytesArr;
-    } */
+    } 
     private Message popMessage() {
         //notice that we explicitly requesting that the string will be decoded from UTF-8
         //this is not actually required as it is the default encoding in java.
         Message result = null;
+        // byte[] t = shortToBytes((short)1);
         short opcode = bytesToShort(new byte[]{bytes[0],bytes[1]});
+                
         switch (opcode) {
             case 1:
                 result =new Register(bytes);
-                System.out.println("Name "+((Register)result).getUsername());
-                System.out.println("Pass "+((Register)result).getPassword());
-                System.out.println("Birth "+((Register)result).getBirthday());
             break;
             case 2:
-                
+                result =new Login(bytes);
             break;
             case 3:
-                
+                result =new Logout();
             break;
             case 4:
-                
+                result =new Follow(bytes);
             break;
             case 5:
                 
@@ -111,7 +112,9 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
                 
             
         }
-         
+        
+        bytes = new byte[1 << 10];
+        len = 0;
         
         return result;
     }

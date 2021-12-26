@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/mnt/c/Users/Ofek Sason/Dropbox/My PC (DESKTOP-B3RD036)/Documents/Semester C/SPL/Assignments/Assignment 3/Project'
+make: Leaving directory '/mnt/c/Users/Ofek Sason/Dropbox/My PC (DESKTOP-B3RD036)/Documents/Semester C/SPL/Assignments/Assignment 3/Project'
+ 
+make: *** No targets specified and no makefile found.  Stop.
+ 
