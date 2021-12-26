@@ -41,7 +41,7 @@ public class Login extends Message {
             }
         }
         username  =  new String(bytes, 2, zeroIndexes[0]-2, StandardCharsets.UTF_8);
-        password  =  new String(bytes, zeroIndexes[0], zeroIndexes[1]-zeroIndexes[0], StandardCharsets.UTF_8);
+        password  =  new String(bytes, zeroIndexes[0]+1, zeroIndexes[1]-(zeroIndexes[0]+1), StandardCharsets.UTF_8);
         captcha  =  1;
     }
 

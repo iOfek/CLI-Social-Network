@@ -19,11 +19,18 @@ public class Follow extends Message {
 
     public Follow(byte[] bytes) {
         this.opcode = Opcode.FOLLOW;
-        if(bytes[2]==0)
+        if(bytes[2]=='0')
             this.follow = true;
         else
-            this.follow = false;    
-        this.username  =  new String(bytes, 3, bytes.length-3, StandardCharsets.UTF_8);
+            this.follow = false;
+        int zeroIndex =-1;
+        for (int i = 3; i < bytes.length; i++) {
+            if(bytes[i] == '\0'){
+                zeroIndex = i;
+                break;
+            } 
+        }   
+        this.username  =  new String(bytes, 3, zeroIndex-3, StandardCharsets.UTF_8);
     }
 
 

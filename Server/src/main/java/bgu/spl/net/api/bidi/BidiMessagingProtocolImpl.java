@@ -38,7 +38,8 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
                 logout((Logout)message);
                 break;
             case FOLLOW:
-
+                follow((Follow)message);
+                break;
             default:
                 break;
         }
@@ -76,6 +77,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
         try {
             db.logout(ownerId);
             connections.send(ownerId, new Ack(Opcode.LOGOUT, "Logout success"));
+            connections.disconnect(ownerId);
         } catch (IllegalStateException e) {
             connections.send(ownerId, new Error(Opcode.LOGOUT));
         }

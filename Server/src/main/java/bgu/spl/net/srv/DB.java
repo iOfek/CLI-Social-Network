@@ -57,7 +57,7 @@ public class DB {
     }
 
     public void logout(int connectionId){
-        if(!connectionidToUsername.contains(connectionId))
+        if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
         namesToUsesrsMap.get(connectionidToUsername.get(connectionId)).setLoggedIn(false);
         connectionidToUsername.remove(connectionId);
@@ -65,10 +65,12 @@ public class DB {
     }
 
     public void follow(int connectionId,boolean isFollow,String usernameTofollow) {
-        if(!connectionidToUsername.contains(connectionId))
+        if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
         User currUser =  namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
         User userToFollow = namesToUsesrsMap.get(usernameTofollow);
+        if(userToFollow == null)
+            throw new IllegalStateException("User to follow is not registered");
         if(isFollow){
             if(!currUser.addFollower(userToFollow))
                 throw new IllegalStateException("User is already being followed");

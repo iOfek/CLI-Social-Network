@@ -32,9 +32,8 @@ public class Register extends Message {
             }
         }
         username  =  new String(bytes, 2, zeroIndexes[0]-2, StandardCharsets.UTF_8);
-        password  =  new String(bytes, zeroIndexes[0], zeroIndexes[1]-zeroIndexes[0], StandardCharsets.UTF_8);
-        birthday  =  new String(bytes, zeroIndexes[1], zeroIndexes[2]-zeroIndexes[1], StandardCharsets.UTF_8);
-        
+        password  =  new String(bytes, zeroIndexes[0]+1, zeroIndexes[1]-(zeroIndexes[0]+1), StandardCharsets.UTF_8);
+        birthday  =  new String(bytes, zeroIndexes[1]+1, zeroIndexes[2]-(zeroIndexes[1]+1), StandardCharsets.UTF_8);
     }
 
 

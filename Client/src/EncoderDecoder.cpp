@@ -24,6 +24,8 @@ std::vector<char> EncoderDecoder::encode(std::string line){
             break;
         case LOGOUT:
             break;
+        case FOLLOW:
+            followEncoding(line,encodedMessage);
         default:
             break;
     }
@@ -46,6 +48,7 @@ void EncoderDecoder::registerEncoding(std::string line, std::vector<char> &encod
         else
             encodedMessage.insert(encodedMessage.end(),line[i]);
     }
+    encodedMessage.insert(encodedMessage.end(),'\0');
     
 }
 
@@ -57,17 +60,16 @@ void EncoderDecoder::loginEncoding(std::string line, std::vector<char> &encodedM
         else
             encodedMessage.insert(encodedMessage.end(),line[i]);
     }
+    encodedMessage.insert(encodedMessage.end(),'\0');
     
 }
 void EncoderDecoder::followEncoding(std::string line, std::vector<char> &encodedMessage){
     line = line.substr(7);
     for (size_t i = 0; i < line.size(); i++){   
-        if(line[i]== ' ')
-            encodedMessage.insert(encodedMessage.end(),'\0');
-        else
+        if(line[i] !=' ')
             encodedMessage.insert(encodedMessage.end(),line[i]);
     }
-    
+    encodedMessage.insert(encodedMessage.end(),'\0');
 }
 
 

@@ -77,14 +77,16 @@ int main (int argc, char *argv[]) {
 		// we filled up to the \n char - we must make sure now that a 0 char is also present. So we truncate last character.
         //answer.resize(len-1);
         std::cout << "Reply: " << answer  << std::endl << std::endl;
-        std::stringstream ss;
+        std::stringstream ss(answer);
         std::string word;
         ss >> word;
-        if (word == "ACK") {
+        if (word.compare("ACK") == 0) {
             ss>> word;
-            if(word == "3")
+            if(word.compare("3") == 0){
                 std::cout << "Exiting...\n" << std::endl;
-            break;
+                break; 
+            }
+                
         }
     }
     return 0;

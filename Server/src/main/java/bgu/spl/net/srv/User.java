@@ -63,6 +63,8 @@ public class User {
    
 
     public boolean addFollower(User user){
+        if(following.contains(user))
+            return false;
         return following.add(user);
     }
     public boolean removeFollower(User user){
