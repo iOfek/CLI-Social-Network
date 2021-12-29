@@ -1,16 +1,18 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <encoderDecoder.h>
 #include <connectionHandler.h>
 
 
 class ServerListener{
     private:
-        std::mutex & _mutex;
-        ConnectionHandler & _connectionHandler;
+        // std::mutex & _mutex;
+        EncoderDecoder & encoderDecoder;
+        ConnectionHandler & connectionHandler;
     public:
     
-        ServerListener(std::mutex& mutex,ConnectionHandler &connectionHandler); 
+        ServerListener(EncoderDecoder &encoderDecoder,ConnectionHandler & connectionHandler); 
        
         void run();
 };

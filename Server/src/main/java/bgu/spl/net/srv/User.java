@@ -1,32 +1,67 @@
 package bgu.spl.net.srv;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import bgu.spl.net.api.bidi.Messages.Notification;
 
 public class User {
     private String username;
     private String password;
     private String birthday;
-    private LinkedList<User> following;
+    private LinkedList<User> followings;
     private LinkedList<User> followers;
-    private int numOfPosts;
+    private LinkedList<User> blocked;
+    private AtomicInteger numOfPosts;
     private int connectionId;
     private boolean LoggedIn;
-
+    private ConcurrentLinkedDeque<Notification> unreadMessages;
+    private ConcurrentLinkedQueue<String> allMessages;
 
     public User(String username, String password, String birthday) {
         this.username = username;
         this.password = password;
         this.birthday = birthday;
-        this.following = new LinkedList<>();
+        this.followings = new LinkedList<>();
         this.followers = new LinkedList<>();
-        this.numOfPosts = 0;
+        this.blocked = new LinkedList<>();
+        this.numOfPosts = new AtomicInteger(0);
         this.LoggedIn=false;
+        this.unreadMessages = new ConcurrentLinkedDeque<>();
+        this.allMessages = new ConcurrentLinkedQueue<String>();
     }
 
-    public boolean getLoggedIn() {return LoggedIn;}
+    public ConcurrentLinkedDeque<Notification> getUnreadMessages() {
+        return unreadMessages;
+    }
+
+    
+
+    public int getNumOfPosts(){
+        return numOfPosts.get();
+    }
+    public void increamentNumOfPosts(){
+        numOfPosts.incrementAndGet();
+    }
+
+
+    public Notification remove(){
+       return unreadMessages.remove();
+    }
+    public void addFirst(Notification msg){
+        unreadMessages.addFirst(msg);
+    }
+    public void add(Notification msg){
+        unreadMessages.add(msg);
+    }
+
+    public boolean isLoggedIn() {return LoggedIn;}
 
     public void setLoggedIn(boolean LoggedIn) {
         this.LoggedIn = LoggedIn;
+        
     }
 
 
@@ -63,20 +98,20 @@ public class User {
    
 
     public boolean addFollower(User user){
-        if(following.contains(user))
+        if(followings.contains(user))
             return false;
-        return following.add(user);
+        return followings.add(user);
     }
     public boolean removeFollower(User user){
-        return following.remove(user);
+        return followings.remove(user);
     }
     
     
     public LinkedList<User> getFollowing() {
-        return following;
+        return followings;
     }
-    public void setFollowing(LinkedList<User> following) {
-        this.following = following;
+    public void setFollowing(LinkedList<User> followings) {
+        this.followings = followings;
     }
 
 
@@ -90,14 +125,8 @@ public class User {
     }
 
 
-    public int getNumOfPosts() {
-        return numOfPosts;
-    }
 
 
-    public void setNumOfPosts(int numOfPosts) {
-        this.numOfPosts = numOfPosts;
-    }
 
 
     public int getConnectionId() {
@@ -107,5 +136,21 @@ public class User {
 
     public void setConnectionId(int connectionId) {
         this.connectionId = connectionId;
+    }
+
+    public void blocked(User currUser) {
+        blocked.add(currUser);
+    }
+
+	public void logMessage(String message) {
+        allMessages.add(message);
+	}
+
+    public int getNumOfFolowers() {
+        return followers.size();
+    }
+
+    public int getNumOfFolowings() {
+        return followings.size();
     }
 }

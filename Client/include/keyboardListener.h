@@ -1,16 +1,16 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <connectionHandler.h>
+#include <encoderDecoder.h>
 
 
 class KeyboardListener{
     private:
         std::mutex & _mutex;
-        ConnectionHandler & _connectionHandler;
+        EncoderDecoder & encoderDecoder;
     public:
     
-        KeyboardListener(std::mutex& mutex,ConnectionHandler &connectionHandler); 
+        KeyboardListener(std::mutex& mutex,EncoderDecoder &_encoderDecoder); 
        
         void run();
 };

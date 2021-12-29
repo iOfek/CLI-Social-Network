@@ -75,6 +75,16 @@ class EncoderDecoder{
 
         void followEncoding(std::string line, std::vector<char> &encodedMessage);
 
+        void postEncoding(std::string line, std::vector<char> &encodedMessage);
+
+        void pmEncoding(std::string line, std::vector<char> &encodedMessage);
+
+        void statEncoding(std::string line, std::vector<char> &encodedMessage);
+
+        void blockEncoding(std::string line, std::vector<char> &encodedMessage);
+
+
+
         std::string decode(std::string encodedMessage);
 
         std::string decodeNotification(std::string encodedMessage);

@@ -1,4 +1,5 @@
 package bgu.spl.net.api.bidi.Messages;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.lang.reflect.Array;
@@ -8,21 +9,21 @@ import java.util.Arrays;
 
 import javax.swing.text.ZoneView;
 
-public class Register extends Message {
+public class Pm extends Message {
     private String username;
-    private String password;
-    private String birthday;//TODO change from String t
+    private String content;
+    private String time;//TODO change from String t
 
     
-    public Register(String username, String password, String birthday) {
-        this.opcode = Opcode.REGISTER;
+    public Pm(String username, String content, String time) {
+        this.opcode = Opcode.PM;
         this.username = username;
-        this.password = password;
-        this.birthday = birthday;
-    } 
+        this.content = content;
+        this.time = time;
+    }
 
-    public Register(byte[] bytes){
-        this.opcode = Opcode.REGISTER;
+    public Pm(byte[] bytes){
+        this.opcode = Opcode.PM;
         int [] zeroIndexes = new int [3];
         int index =0;
         for (int i =2; i < bytes.length &&index <3; i++) {
@@ -32,8 +33,8 @@ public class Register extends Message {
             }
         }
         username  =  new String(bytes, 2, zeroIndexes[0]-2, StandardCharsets.UTF_8);
-        password  =  new String(bytes, zeroIndexes[0]+1, zeroIndexes[1]-(zeroIndexes[0]+1), StandardCharsets.UTF_8);
-        birthday  =  new String(bytes, zeroIndexes[1]+1, zeroIndexes[2]-(zeroIndexes[1]+1), StandardCharsets.UTF_8);
+        content  =  new String(bytes, zeroIndexes[0]+1, zeroIndexes[1]-(zeroIndexes[0]+1), StandardCharsets.UTF_8);
+        time  =  new String(bytes, zeroIndexes[1]+1, zeroIndexes[2]-(zeroIndexes[1]+1), StandardCharsets.UTF_8);
     }
 
 
@@ -41,24 +42,24 @@ public class Register extends Message {
         this.username = username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setcontent(String content) {
+        this.content = content;
     }
 
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
+    public void settime(String time) {
+        this.time = time;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getContent() {
+        return content;
     }
 
-    public String getBirthday() {
-        return birthday;
+    public String getTime() {
+        return time;
     }
 
 
@@ -71,13 +72,13 @@ public class Register extends Message {
         byte [] opcodeBytes = shortToBytes(getOpcodeValue());
         byte [] usernameBytes = this.username.getBytes(StandardCharsets.UTF_8);
         byte seperator ='\0';
-        byte [] passwordBytes = this.password.getBytes(StandardCharsets.UTF_8);
-        byte [] birthdayBytes = this.birthday.getBytes(StandardCharsets.UTF_8);
+        byte [] contentBytes = this.content.getBytes(StandardCharsets.UTF_8);
+        byte [] timeBytes = this.time.getBytes(StandardCharsets.UTF_8);
         encodedMessgae = ArrayUtils.addAll(opcodeBytes, usernameBytes);
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, seperator);
-        encodedMessgae = ArrayUtils.addAll(encodedMessgae, passwordBytes);
+        encodedMessgae = ArrayUtils.addAll(encodedMessgae, contentBytes);
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, seperator);
-        encodedMessgae = ArrayUtils.addAll(encodedMessgae, birthdayBytes);
+        encodedMessgae = ArrayUtils.addAll(encodedMessgae, timeBytes);
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, seperator);
         String bye = ";";
         encodedMessgae = ArrayUtils.addAll(encodedMessgae, bye.getBytes(StandardCharsets.UTF_8));
@@ -89,3 +90,4 @@ public class Register extends Message {
 
     
 }
+

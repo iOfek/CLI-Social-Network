@@ -4,11 +4,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
+import bgu.spl.net.api.bidi.Messages.Block;
 import bgu.spl.net.api.bidi.Messages.Follow;
 import bgu.spl.net.api.bidi.Messages.Login;
 import bgu.spl.net.api.bidi.Messages.Logout;
+import bgu.spl.net.api.bidi.Messages.Logstat;
 import bgu.spl.net.api.bidi.Messages.Message;
+import bgu.spl.net.api.bidi.Messages.Pm;
+import bgu.spl.net.api.bidi.Messages.Post;
 import bgu.spl.net.api.bidi.Messages.Register;
+import bgu.spl.net.api.bidi.Messages.Stat;
 import bgu.spl.net.api.bidi.Messages.Message.Opcode;
 
 public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message> {
@@ -86,28 +91,19 @@ public class BidiMessageEncoderDecoder implements MessageEncoderDecoder<Message>
                 result =new Follow(bytes);
             break;
             case 5:
-                
+                result =new Post(bytes);
             break;
             case 6:
-                
+                result =new Pm(bytes);
             break;
             case 7:
-                
+                result =new Logstat(bytes);
             break;
             case 8:
-                
-            break;
-            case 9:
-                
-            break;
-            case 10:
-                
-            break;
-            case 11:
-                
+                result =new Stat(bytes);
             break;
             case 12:
-                
+                result =new Block(bytes);
             break;
                 
             

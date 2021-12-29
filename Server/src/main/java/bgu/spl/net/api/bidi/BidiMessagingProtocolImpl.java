@@ -29,22 +29,39 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
         System.out.println("OPCODE "+ message.getOpcode());
         switch (message.getOpcode()) {
             case REGISTER:
-                register((Register)message);
+                register((Register) message);
                 break;
             case LOGIN:
-                login((Login)message);
+                login((Login) message);
                 break;
             case LOGOUT:
-                logout((Logout)message);
+                logout((Logout) message);
                 break;
             case FOLLOW:
-                follow((Follow)message);
+                follow((Follow) message);
+                break;
+            case POST:
+                post((Post) message);
+                break;
+            case PM:
+                pm((Pm) message);
+                break;
+            case LOGSTAT:
+                logstat((Logstat) message);
+                break;
+            case STAT:
+                stat((Stat) message);
+                break;
+            case BLOCK:
+                block((Block) message);
                 break;
             default:
                 break;
         }
         
     }
+
+    
 
     @Override
     public boolean shouldTerminate() {
@@ -66,7 +83,7 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
         
         try {
             db.login(message.getUsername(),message.getPassword(),ownerId);
-            connections.send(ownerId, new Ack(Opcode.LOGIN, "Login success"));
+            connections.send(ownerId, new Ack(Opcode.LOGIN, ""));
         } catch (IllegalStateException e) {
             connections.send(ownerId, new Error(Opcode.LOGIN));
         }
@@ -76,8 +93,9 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
         System.out.println("LOGOUT");
         try {
             db.logout(ownerId);
-            connections.send(ownerId, new Ack(Opcode.LOGOUT, "Logout success"));
+            connections.send(ownerId, new Ack(Opcode.LOGOUT,""));
             connections.disconnect(ownerId);
+            shouldTerminate();
         } catch (IllegalStateException e) {
             connections.send(ownerId, new Error(Opcode.LOGOUT));
         }
@@ -91,5 +109,50 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
             connections.send(ownerId, new Error(Opcode.FOLLOW));
         }
     }
+    public void post(Post message){
+        System.out.println("POST");
+        try {
+            db.post(ownerId, message.getContent());
+            connections.send(ownerId, new Ack(Opcode.POST,""));
+        } catch (IllegalStateException e) {
+            connections.send(ownerId, new Error(Opcode.POST));
+        }
+    }
+    public void pm(Pm message){
+        System.out.println("PM");
+        try {
+            db.pm(ownerId,message.getUsername(),message.getContent(),message.getTime());
+            connections.send(ownerId, new Ack(Opcode.PM,""));
+        } catch (IllegalStateException e) {
+            connections.send(ownerId, new Error(Opcode.PM));
+        }
+    }
+    public void logstat(Logstat message){
+        System.out.println("LOGSTAT");
+        try {
+            String optional= db.logstat(ownerId);
+            connections.send(ownerId, new Ack(Opcode.LOGSTAT,optional));
+        } catch (IllegalStateException e) {
+            connections.send(ownerId, new Error(Opcode.LOGSTAT));
+        }
+    }
+    public void stat(Stat message){
+        System.out.println("STAT");
+        try {
+            String optional= db.stat(ownerId, message.getUsernamesList());
+            connections.send(ownerId, new Ack(Opcode.STAT, optional));
+        } catch (IllegalStateException e) {
+            connections.send(ownerId, new Error(Opcode.STAT));
+        }
+    }
     
+    public void block(Block message) {
+        System.out.println("BLOCK");
+        try {
+            db.block(ownerId, message.getUsername());
+            connections.send(ownerId, new Ack(Opcode.BLOCK,""));
+        } catch (IllegalStateException e) {
+            connections.send(ownerId, new Error(Opcode.STAT));
+        }
+    }
 }
