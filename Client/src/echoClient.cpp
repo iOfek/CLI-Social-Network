@@ -25,23 +25,23 @@ int main (int argc, char *argv[]) {
     }
 	EncoderDecoder encoderDecoder = EncoderDecoder();
     
-     std::mutex mutex;
+    std::mutex mutex;
+    KeyboardListener keyboardTask(mutex,&encoderDecoder,&connectionHandler);
 
-    KeyboardListener keyboardTask(mutex,encoderDecoder);
 
-
-    ServerListener serverTask(encoderDecoder,connectionHandler);
+    ServerListener serverTask(mutex,&encoderDecoder,&connectionHandler);
 
  
 
     std::thread keyboardListenerThread(&KeyboardListener::run, &keyboardTask);
     std::thread serverListenerThread(&ServerListener::run, &serverTask);
 
-    // keyboardListenerThread.join();
 
      serverListenerThread.join();
     keyboardListenerThread.join();
-	//From here we will see the rest of the ehco client implementation:
+
+
+	// From here we will see the rest of the ehco client implementation:
     // while (1) {
     //     const short bufsize = 1024;
     //     char buf[bufsize];
@@ -94,5 +94,5 @@ int main (int argc, char *argv[]) {
                 
     //     }
     // }
-    // return 0;
+    return 0;
 }

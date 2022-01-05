@@ -58,14 +58,13 @@ public class DB {
                 if(!(user.getPassword().equals(password)))
                     throw new IllegalStateException("Incorrect password");
                 else{
-                    User currUser = namesToUsesrsMap.get(user.getUsername());
-                    currUser.setLoggedIn(true);
+                    user.setLoggedIn(true);
+                    user.setConnectionId(connectionId);
                     connectionidToUsername.put(connectionId, userName);
                     //TODO check messages
-                    for(Notification msg: currUser.getUnreadMessages()){
+                    for(Notification msg: user.getUnreadMessages()){
                         connections.send(connectionId, msg);
                     }
-
                 }
                     
             }
@@ -75,9 +74,10 @@ public class DB {
     public void logout(int connectionId){
         if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
-        namesToUsesrsMap.get(connectionidToUsername.get(connectionId)).setLoggedIn(false);
+        User user =namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
+        user.setLoggedIn(false);
+        user.setConnectionId(-1);
         connectionidToUsername.remove(connectionId);
-        
     }
 
     public void follow(int connectionId,boolean isFollow,String usernameTofollow) {
@@ -160,8 +160,10 @@ public class DB {
         if(recipient == null)
             throw new IllegalStateException("Recipient is not registered");
         Notification n = new Notification(false, currUser.getUsername(), content);
-        if(recipient.isLoggedIn() && connections.send(recipient.getConnectionId(), n)){
-                    
+        if(recipient.isLoggedIn() ){
+            if(!connections.send(recipient.getConnectionId(), n)){
+                throw new IllegalStateException("COULD NOT SEND");
+            }
         }
         else{//user is not logged in or send failed
             recipient.add(n);

@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <boost/asio.hpp>
+#include <encoderDecoder.h>
 
 using boost::asio::ip::tcp;
 
@@ -12,7 +13,11 @@ private:
 	const std::string host_;
 	const short port_;
 	boost::asio::io_service io_service_;   // Provides core I/O functionality
-	tcp::socket socket_; 
+	tcp::socket socket_;
+    EncoderDecoder encoderDecoder;
+    bool shouldTerminate;
+    bool shouldWait;
+
  
 public:
     ConnectionHandler(std::string host, short port);
@@ -47,7 +52,21 @@ public:
 	
     // Close down the connection properly.
     void close();
- 
+    
+    ///
+    bool sendMessage(std::string& line);
+    ///
+    bool getMessage(std::string& line);
+
+    void terminate(){shouldTerminate=true;}
+
+    bool isTerminated(){return shouldTerminate;}
+    
+    bool isWaiting(){return shouldWait;}
+
+    void wait(){shouldWait=true;}
+    void stopWait(){shouldWait=false;}
+
 }; //class ConnectionHandler
  
 #endif

@@ -198,6 +198,9 @@ std::string EncoderDecoder::decodeAck(std::string encodedMessage){
     return decodedMessage;
 }
 std::string EncoderDecoder::decodeError(std::string encodedMessage){
-    std::string decodedMessage = "ERROR";
+    std::string decodedMessage = "ERROR ";
+    char bytesArr[] = {encodedMessage[2],encodedMessage[3]};
+    int messageOpcodeValue =static_cast<int>(bytesToShort(bytesArr));
+    decodedMessage +=  std::to_string(messageOpcodeValue);
     return decodedMessage;
 }
