@@ -43,19 +43,64 @@ public class Ack  extends Message{
         }
 
         else if(messageOpcode == Opcode.LOGSTAT){
-            String[] fields = optional.split("\\s+"); // splits by whitespace
-            int age = Integer.parseInt(fields[0]);
-            int numOfPosts = Integer.parseInt(fields[1]);
-            int numOfFollowers = Integer.parseInt(fields[2]);
-            int numOfFollowings = Integer.parseInt(fields[3]);
-            byte[] ageBytes = shortToBytes((short)age);
-            byte[] numOfPostsBytes = shortToBytes((short)numOfPosts);
-            byte[] numOfFollowersBytes = shortToBytes((short)numOfFollowers);
-            byte[] numOfFollowingsBytes = shortToBytes((short)numOfFollowings);
-            encodedMessgae = ArrayUtils.addAll(encodedMessgae, ageBytes);  
-            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfPostsBytes);  
-            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowersBytes);  
-            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowingsBytes);  
+//            String[] fields = optional.split("\\s+"); // splits by whitespace
+//            int age = Integer.parseInt(fields[0]);
+//            int numOfPosts = Integer.parseInt(fields[1]);
+//            int numOfFollowers = Integer.parseInt(fields[2]);
+//            int numOfFollowings = Integer.parseInt(fields[3]);
+//            byte[] ageBytes = shortToBytes((short)age);
+//            byte[] numOfPostsBytes = shortToBytes((short)numOfPosts);
+//            byte[] numOfFollowersBytes = shortToBytes((short)numOfFollowers);
+//            byte[] numOfFollowingsBytes = shortToBytes((short)numOfFollowings);
+//            encodedMessgae = ArrayUtils.addAll(encodedMessgae, ageBytes);
+//            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfPostsBytes);
+//            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowersBytes);
+//            encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowingsBytes);
+
+            String[] usersFields = optional.split("\n"); // splits by \n
+            for(String userField : usersFields){
+                String[] fields = userField.split("\\s+"); // splits by whitespace
+                //String userName=fields[0];
+                int age = Integer.parseInt(fields[0]);
+                int numOfPosts = Integer.parseInt(fields[1]);
+                int numOfFollowers = Integer.parseInt(fields[2]);
+                int numOfFollowings = Integer.parseInt(fields[3]);
+                //byte[] nameBytes = userName.getBytes(StandardCharsets.UTF_8);
+                byte[] ageBytes = shortToBytes((short)age);
+                byte[] numOfPostsBytes = shortToBytes((short)numOfPosts);
+                byte[] numOfFollowersBytes = shortToBytes((short)numOfFollowers);
+                byte[] numOfFollowingsBytes = shortToBytes((short)numOfFollowings);
+                //encodedMessgae = ArrayUtils.addAll(encodedMessgae, nameBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, ageBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfPostsBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowersBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowingsBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, "\n".getBytes(StandardCharsets.UTF_8));
+            }
+
+
+        }
+        else if(messageOpcode == Opcode.STAT){
+                String[] fields = optional.split("\\s+"); // splits by whitespace
+                //String userName=fields[0];
+                int age = Integer.parseInt(fields[0]);
+                int numOfPosts = Integer.parseInt(fields[1]);
+                int numOfFollowers = Integer.parseInt(fields[2]);
+                int numOfFollowings = Integer.parseInt(fields[3]);
+                //byte[] nameBytes = userName.getBytes(StandardCharsets.UTF_8);
+                byte[] ageBytes = shortToBytes((short)age);
+                byte[] numOfPostsBytes = shortToBytes((short)numOfPosts);
+                byte[] numOfFollowersBytes = shortToBytes((short)numOfFollowers);
+                byte[] numOfFollowingsBytes = shortToBytes((short)numOfFollowings);
+                //encodedMessgae = ArrayUtils.addAll(encodedMessgae, nameBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, ageBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfPostsBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowersBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, numOfFollowingsBytes);
+                encodedMessgae = ArrayUtils.addAll(encodedMessgae, "\n".getBytes(StandardCharsets.UTF_8));
+
+
+
         }
                 
         String bye = ";";

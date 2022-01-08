@@ -11,6 +11,7 @@ import javax.print.DocFlavor.STRING;
 
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
+import bgu.spl.net.api.bidi.Messages.Ack;
 import bgu.spl.net.api.bidi.Messages.Message;
 import bgu.spl.net.api.bidi.Messages.Notification;
 
@@ -140,10 +141,28 @@ public class DB {
     private LinkedList<String> getTaggedUsers(String content){
         LinkedList<String> list = new LinkedList<>();
         String username;
-        for (int i = 0; i < content.length()-1; i++) {
+        for (int i = 0; i < content.length(); i++) {
             if(content.charAt(i)== '@'){
                 int endIndex=i+1;
-                while(content.charAt(endIndex)!= ' '){
+                while(endIndex<content.length() && content.charAt(endIndex)!= ' '){
+                    endIndex++;
+                }
+                username = content.substring(i+1, endIndex);
+                list.add(username);
+                i=endIndex+1;
+            }
+        }
+        return list;
+    }
+
+    private LinkedList<String> getStatUsers(String content){
+        LinkedList<String> list = new LinkedList<>();
+        String username;
+        int startIndex=0;
+        for (int i = 0; i < content.length(); i++) {
+            if(content.charAt(i)== '|'){
+                int endIndex=i+1;
+                while(endIndex<content.length() && content.charAt(endIndex)!= ' '){
                     endIndex++;
                 }
                 username = content.substring(i+1, endIndex);
@@ -182,17 +201,28 @@ public class DB {
         if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
         User currUser =  namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
-        return currUser.getAge() +" "+currUser.getNumOfPosts()+" "+currUser.getNumOfFolowers()+" "+currUser.getNumOfFolowings();
+        String output="";
+        for (Integer key : connectionidToUsername.keySet()){
+            User user=namesToUsesrsMap.get(connectionidToUsername.get(key));
+            output=user.getAge() +" "+user.getNumOfPosts()+" "+user.getNumOfFolowers()+" "+user.getNumOfFolowings();
+            connections.send(connectionId, new Ack(Message.Opcode.LOGSTAT,output));
+
+        }
+
+        //return currUser.getAge() +" "+currUser.getNumOfPosts()+" "+currUser.getNumOfFolowers()+" "+currUser.getNumOfFolowings();
+        return output;
     }
 
-    public String stat(int connectionId, LinkedList<String> usernamesList) {
+    public String stat(int connectionId,LinkedList<String> usernamesList) {
         if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
         String output="";
-//        for(int i=0;i<usernamesList.size();i++){
-//            User user=namesToUsesrsMap.get(usernamesList.get(i));
-//            output = output + user.getAge() +" "+user.getNumOfPosts()+" "+user.getNumOfFolowers()+" "+user.getNumOfFolowings() + "\n";
-//        }
+        for (String username : usernamesList){
+            User user=namesToUsesrsMap.get(connectionidToUsername.get(username));
+            output=user.getAge() +" "+user.getNumOfPosts()+" "+user.getNumOfFolowers()+" "+user.getNumOfFolowings();
+            connections.send(connectionId, new Ack(Message.Opcode.STAT,output));
+
+        }
         return null;
     }
 

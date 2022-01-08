@@ -39,9 +39,10 @@ public class Stat extends Message {
         int [] zeroIndexes = new int [3];
         int zeroIndex =-1;
         String username ="";
+        int startIndex=0;
         for (int i = 3; i < bytes.length&& bytes[i] != '\0'; i++) {
             if(bytes[i] == '|'){
-                usernamesList.add( username);
+                usernamesList.add(username);
                 username = "";
             }
             else

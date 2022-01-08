@@ -130,8 +130,8 @@ public class BidiMessagingProtocolImpl implements BidiMessagingProtocol<Message>
     public void logstat(Logstat message){
         System.out.println("LOGSTAT");
         try {
-            String optional= db.logstat(ownerId);
-            connections.send(ownerId, new Ack(Opcode.LOGSTAT,optional));
+           db.logstat(ownerId);
+            //connections.send(ownerId, new Ack(Opcode.LOGSTAT,optional));
         } catch (IllegalStateException e) {
             connections.send(ownerId, new Error(Opcode.LOGSTAT));
         }
