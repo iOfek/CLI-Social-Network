@@ -89,6 +89,14 @@ public class User {
         return birthday;
     }
 
+    public String getAge(){
+        String[] birthDayParts=getBirthday().split("-");
+
+        int age=2021-Integer.parseInt(birthDayParts[2]);
+        String ageSt=Integer.toString(age);
+        return ageSt;
+    }
+
 
     public void setBirthday(String birthday) {
         this.birthday = birthday;
@@ -98,20 +106,21 @@ public class User {
    
 
     public boolean addFollower(User user){
-        if(followings.contains(user))
+        if(followers.contains(user))
             return false;
-        return followings.add(user);
+        user.addFollowing(this);
+        return followers.add(user);
     }
     public boolean removeFollower(User user){
-        return followings.remove(user);
+        return followers.remove(user) & user.RemoveFollowing(this);
     }
     
     
     public LinkedList<User> getFollowing() {
         return followings;
     }
-    public void setFollowing(LinkedList<User> followings) {
-        this.followings = followings;
+    public void addFollowing(User toFollow) {
+        followings.add(toFollow);
     }
 
 
@@ -120,12 +129,19 @@ public class User {
     }
 
 
-    public void setFollowers(LinkedList<User> followers) {
-        this.followers = followers;
+    public boolean RemoveFollowing(User toUnFollow) {
+        return followings.remove(toUnFollow);
     }
 
 
-
+//    public void follow(User toFollow){
+//        this.followings.add(toFollow);
+//        toFollow.followers.add(this);
+//    }
+//    public void unFollow(User toUnFollow){
+//        this.followings.remove(toUnFollow);
+//        toUnFollow.followers.remove(this);
+//    }
 
 
 
@@ -141,6 +157,8 @@ public class User {
     public void blocked(User currUser) {
         blocked.add(currUser);
     }
+
+    public LinkedList<User> getBlocked(){return blocked;}
 
 	public void logMessage(String message) {
         allMessages.add(message);

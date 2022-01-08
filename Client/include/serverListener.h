@@ -7,12 +7,12 @@
 
 class ServerListener{
     private:
-        std::mutex &mutex;
+        //std::mutex &mutex;
         EncoderDecoder * encoderDecoder;
         ConnectionHandler * connectionHandler;
     public:
     
-        ServerListener(std::mutex &_mutex, EncoderDecoder *encoderDecoder,ConnectionHandler * connectionHandler); 
+        ServerListener(EncoderDecoder *encoderDecoder,ConnectionHandler * connectionHandler);
        
         void run();
 };

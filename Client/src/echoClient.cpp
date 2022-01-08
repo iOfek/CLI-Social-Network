@@ -25,11 +25,11 @@ int main (int argc, char *argv[]) {
     }
 	EncoderDecoder encoderDecoder = EncoderDecoder();
     
-    std::mutex mutex;
-    KeyboardListener keyboardTask(mutex,&encoderDecoder,&connectionHandler);
+    //std::mutex mutex;
+    KeyboardListener keyboardTask(&encoderDecoder,&connectionHandler);
 
 
-    ServerListener serverTask(mutex,&encoderDecoder,&connectionHandler);
+    ServerListener serverTask(&encoderDecoder,&connectionHandler);
 
  
 

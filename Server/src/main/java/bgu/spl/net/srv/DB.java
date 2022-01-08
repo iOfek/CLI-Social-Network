@@ -87,15 +87,16 @@ public class DB {
         User userToFollow = namesToUsesrsMap.get(usernameTofollow);
         if(userToFollow == null)
             throw new IllegalStateException("User to follow is not registered");
-        if(isFollow){
-            if(!currUser.addFollower(userToFollow))
-                throw new IllegalStateException("User is already being followed");
+
+        if(!currUser.getBlocked().contains(userToFollow)) {
+            if (isFollow) {
+                if (!userToFollow.addFollower(currUser))
+                    throw new IllegalStateException("User is already being followed");
+            } else {
+                if (!userToFollow.removeFollower(currUser))
+                    throw new IllegalStateException("User is already not being followed");
+            }
         }
-        else{
-            if(!currUser.removeFollower(userToFollow))
-                throw new IllegalStateException("User is already not being followed");
-        }
-       
     }
 
     public void post(int connectionId, String content) {
@@ -109,9 +110,9 @@ public class DB {
         for (String username : taggedUsers) {
             //check if tagged user is registered
             User taggedUser = namesToUsesrsMap.get(username);
-            if(taggedUser!=null){
+            if(taggedUser!=null && !currUser.getBlocked().contains(taggedUser)){
                 if(taggedUser.isLoggedIn() && connections.send(taggedUser.getConnectionId(), n)){
-                    
+
                 }
                 else{//user is not logged in or send failed
                     taggedUser.add(n);
@@ -121,6 +122,7 @@ public class DB {
         }
         //send to followers
         LinkedList<User> followers = currUser.getFollowers();
+
         for (User follower : followers) {
             if(follower.isLoggedIn() && connections.send(follower.getConnectionId(), n)){
                 
@@ -153,22 +155,23 @@ public class DB {
     }
 
     public void pm(int connectionId, String username, String content, String time) {
-        if(!connectionidToUsername.containsKey(connectionId))
+        if (!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
-        User currUser =  namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
-        User recipient =  namesToUsesrsMap.get(username);
-        if(recipient == null)
+        User currUser = namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
+        User recipient = namesToUsesrsMap.get(username);
+        if (recipient == null)
             throw new IllegalStateException("Recipient is not registered");
-        Notification n = new Notification(false, currUser.getUsername(), content);
-        if(recipient.isLoggedIn() ){
-            if(!connections.send(recipient.getConnectionId(), n)){
-                throw new IllegalStateException("COULD NOT SEND");
+        if (!currUser.getBlocked().contains(recipient)) {
+            Notification n = new Notification(false, currUser.getUsername(), content);
+            if (recipient.isLoggedIn()) {
+                if (!connections.send(recipient.getConnectionId(), n)) {
+                    throw new IllegalStateException("COULD NOT SEND");
+                }
+            } else {//user is not logged in or send failed
+                recipient.add(n);
             }
+            recipient.logMessage(content);
         }
-        else{//user is not logged in or send failed
-            recipient.add(n);
-        }
-        recipient.logMessage(content);
     }
     //TODO filter
     private String filter(String content){
@@ -179,12 +182,17 @@ public class DB {
         if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
         User currUser =  namesToUsesrsMap.get(connectionidToUsername.get(connectionId));
-        return currUser.getBirthday() +" "+currUser.getNumOfPosts()+" "+currUser.getNumOfFolowers()+" "+currUser.getNumOfFolowings();  
+        return currUser.getAge() +" "+currUser.getNumOfPosts()+" "+currUser.getNumOfFolowers()+" "+currUser.getNumOfFolowings();
     }
 
     public String stat(int connectionId, LinkedList<String> usernamesList) {
         if(!connectionidToUsername.containsKey(connectionId))
             throw new IllegalStateException("User is not logged in");
+        String output="";
+//        for(int i=0;i<usernamesList.size();i++){
+//            User user=namesToUsesrsMap.get(usernamesList.get(i));
+//            output = output + user.getAge() +" "+user.getNumOfPosts()+" "+user.getNumOfFolowers()+" "+user.getNumOfFolowings() + "\n";
+//        }
         return null;
     }
 
@@ -196,5 +204,7 @@ public class DB {
         if(userToBlock == null)
             throw new IllegalStateException("User To Block is not registered");
         userToBlock.blocked(currUser);
+        userToBlock.removeFollower(currUser);
+        currUser.removeFollower(userToBlock);
 	}    
 }

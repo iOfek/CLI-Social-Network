@@ -6,7 +6,7 @@
 
         
     
-ServerListener::ServerListener(std::mutex &_mutex, EncoderDecoder *_encoderDecoder,ConnectionHandler *_connectionHandler):  mutex(_mutex),encoderDecoder(_encoderDecoder),connectionHandler(_connectionHandler){}; 
+ServerListener::ServerListener(EncoderDecoder *_encoderDecoder,ConnectionHandler *_connectionHandler):encoderDecoder(_encoderDecoder),connectionHandler(_connectionHandler){};
        
 void ServerListener::run(){
         while (1){
@@ -32,8 +32,8 @@ void ServerListener::run(){
                 ss>> word;
                 if(word.compare("3") == 0){
                     std::cout << "Exiting...\n" << std::endl;
-                    connectionHandler->stopWait();
                     connectionHandler->terminate();
+                    connectionHandler->stopWait();
                     break; 
                 }     
             }

@@ -10,13 +10,13 @@ public class Block extends Message {
     
 
     public Block(boolean follow, String username) {
-        this.opcode = Opcode.FOLLOW;
+        this.opcode = Opcode.BLOCK;
         this.username = username;
     }
 
 
     public Block(byte[] bytes) {
-        this.opcode = Opcode.FOLLOW;
+        this.opcode = Opcode.BLOCK;
         int zeroIndex =-1;
         for (int i = 2; i < bytes.length; i++) {
             if(bytes[i] == '\0'){

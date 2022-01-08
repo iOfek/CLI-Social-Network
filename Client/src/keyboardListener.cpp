@@ -6,7 +6,7 @@
 
         
     
-KeyboardListener::KeyboardListener(std::mutex &_mutex, EncoderDecoder *_encoderDecoder,ConnectionHandler *_connectionHandler):  mutex(_mutex),encoderDecoder(_encoderDecoder),connectionHandler(_connectionHandler){}; 
+KeyboardListener::KeyboardListener( EncoderDecoder *_encoderDecoder,ConnectionHandler *_connectionHandler): encoderDecoder(_encoderDecoder),connectionHandler(_connectionHandler){};
        
 void KeyboardListener::run(){
 

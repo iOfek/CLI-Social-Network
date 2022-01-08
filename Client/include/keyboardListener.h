@@ -9,9 +9,9 @@ class KeyboardListener{
     private:
         EncoderDecoder * encoderDecoder;
         ConnectionHandler * connectionHandler;
-        std::mutex &mutex;
+        //std::mutex &mutex;
     public:
-        KeyboardListener(std::mutex &_mutex, EncoderDecoder *_encoderDecoder,ConnectionHandler * _connectionHandler); 
+        KeyboardListener(EncoderDecoder *_encoderDecoder,ConnectionHandler * _connectionHandler);
        
         void run();
 };

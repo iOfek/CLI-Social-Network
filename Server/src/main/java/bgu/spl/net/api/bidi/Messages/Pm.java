@@ -13,6 +13,7 @@ public class Pm extends Message {
     private String username;
     private String content;
     private String time;//TODO change from String t
+    private final String[] offensiveWords={"Trump","war","Ofek Sason"};
 
     
     public Pm(String username, String content, String time) {
@@ -24,9 +25,9 @@ public class Pm extends Message {
 
     public Pm(byte[] bytes){
         this.opcode = Opcode.PM;
-        int [] zeroIndexes = new int [3];
+        int [] zeroIndexes = new int [2];
         int index =0;
-        for (int i =2; i < bytes.length &&index <3; i++) {
+        for (int i =2; i < bytes.length &&index <2; i++) {
             if(bytes[i] == '\0' ){
                 zeroIndexes[index] = i;
                 index+=1;
@@ -34,7 +35,13 @@ public class Pm extends Message {
         }
         username  =  new String(bytes, 2, zeroIndexes[0]-2, StandardCharsets.UTF_8);
         content  =  new String(bytes, zeroIndexes[0]+1, zeroIndexes[1]-(zeroIndexes[0]+1), StandardCharsets.UTF_8);
-        time  =  new String(bytes, zeroIndexes[1]+1, zeroIndexes[2]-(zeroIndexes[1]+1), StandardCharsets.UTF_8);
+        //time  =  new String(bytes, zeroIndexes[1]+1, zeroIndexes[2]-(zeroIndexes[1]+1), StandardCharsets.UTF_8);
+
+        //filtering content
+        String[] badWords = getOffensiveWords();
+        for(int i=0 ; i<badWords.length ; i++){
+            content = content.replace(badWords[i],"<filtered>");
+        }
     }
 
 
@@ -61,6 +68,8 @@ public class Pm extends Message {
     public String getTime() {
         return time;
     }
+
+    public String[] getOffensiveWords(){return offensiveWords;}
 
 
 

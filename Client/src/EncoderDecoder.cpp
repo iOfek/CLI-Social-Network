@@ -97,9 +97,12 @@ void EncoderDecoder::postEncoding(std::string line, std::vector<char> &encodedMe
 
 void EncoderDecoder::pmEncoding(std::string line, std::vector<char> &encodedMessage){
     line = line.substr(3);
+    bool firstSpace=true;
     for (size_t i = 0; i < line.size(); i++){   
-        if(line[i]== ' ')
-            encodedMessage.insert(encodedMessage.end(),'\0');
+        if(line[i]== ' ' & firstSpace) {
+            encodedMessage.insert(encodedMessage.end(), '\0');
+            firstSpace=false;
+        }
         else
             encodedMessage.insert(encodedMessage.end(),line[i]);
     }

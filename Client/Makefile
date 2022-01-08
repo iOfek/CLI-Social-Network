@@ -2,7 +2,7 @@ CFLAGS:=-c -Wall -Weffc++ -g -std=c++11 -Iinclude
 LDFLAGS:=-lboost_system -pthread
 
 all: EchoClient
-	g++ -o bin/echoExample bin/serverListener.o bin/keyboardListener.o bin/encoderDecoder.o bin/connectionHandler.o bin/echoClient.o $(LDFLAGS) 
+	g++ -o bin/BGSclient bin/serverListener.o bin/keyboardListener.o bin/encoderDecoder.o bin/connectionHandler.o bin/echoClient.o $(LDFLAGS)
 
 EchoClient: bin/serverListener.o bin/keyboardListener.o bin/connectionHandler.o bin/echoClient.o bin/encoderDecoder.o
 	
